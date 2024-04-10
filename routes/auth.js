@@ -8,4 +8,4 @@ router.post('/login', async (req, res) => login(req, res));
 
 router.post('/signup', async (req, res) => signUp(req, res));
 
-router.post('/me', authenticateToken, async (req, res) => getUserInformation(req, res));
+router.me('/me', authenticateToken, async (req, res) => getUserInformation(req, res));
