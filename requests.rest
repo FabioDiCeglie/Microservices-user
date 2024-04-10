@@ -1,0 +1,17 @@
+## Test Endpoint
+GET http://localhost:3000
+
+### Login
+
+POST http://localhost:3000/login
+Content-Type: application/json
+
+{
+    "username": "Fabio",
+    "password": "123"
+}
+
+### Test Endpoint with Authorization
+
+GET http://localhost:3000/test/posts
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJuYW1lIjoiRmFiaW8iLCJwYXNzd29yZCI6IjEyMyIsImlhdCI6MTcxMjc2NDg5NX0.tNYDlwxiFGJQWJOJm3XHfq3yJ6qfEYYYNI-2iVfUqHU
