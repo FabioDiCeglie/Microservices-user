@@ -21,7 +21,7 @@ export const authenticateToken = (req, res, next) => {
       // if (!user) {
       //   return res.status(404).send({ message: 'User does not exist' });
       // }
-      
+
       // add user object to request
       req.user = user;
       // next handler
@@ -48,4 +48,10 @@ export const createToken = (data) => {
 
 export const verifyToken = (token) => {
   return jwt.verify(token, jwtSecret);
+};
+
+export const validateEmail = (email) => {
+  // Regular expression for basic email validation
+  const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+  return emailRegex.test(email);
 };
