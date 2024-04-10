@@ -11,6 +11,22 @@ Content-Type: application/json
     "password": "123"
 }
 
+### Sign Up
+
+
+POST http://localhost:3000/auth/signup
+Content-Type: application/json
+
+{
+    "email": "Fabio",
+    "password": "123"
+}
+
+## Get User information
+
+POST http://localhost:3000/auth/me
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJlbWFpbCI6IkZhYmlvIiwicGFzc3dvcmQiOiIxMjMiLCJpYXQiOjE3MTI3NzE1MzEsImV4cCI6MTcxMjc3MjQzMX0.7Fr0_2rx0ITw0QOcNkcRNSOewiNY0oErZ-T5HR3cwmI
+
 ### Test Endpoint with Authorization
 
 GET http://localhost:3000/test/posts
