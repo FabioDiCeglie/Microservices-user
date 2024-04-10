@@ -3,12 +3,14 @@ import express from 'express';
 import { posts } from './utils/fixtures.js';
 import { router as user } from './routes/auth.js';
 import { authenticateToken } from './utils/helpers.js';
+import cors from 'cors';
 
 dotenv.config();
 
 const app = express();
 
 app.use(express.json());
+app.use(cors());
 
 app.get('/', (req, res) => {
   res.json([
