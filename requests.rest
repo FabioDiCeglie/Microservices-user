@@ -1,4 +1,5 @@
 ## Test Endpoint
+
 GET http://localhost:3000
 
 ### Login
@@ -12,7 +13,6 @@ Content-Type: application/json
 }
 
 ### Sign Up
-
 
 POST http://localhost:3000/auth/signup
 Content-Type: application/json
