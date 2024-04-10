@@ -3,15 +3,15 @@ GET http://localhost:3000
 
 ### Login
 
-POST http://localhost:3000/login
+POST http://localhost:3000/auth/login
 Content-Type: application/json
 
 {
-    "username": "Fabio",
+    "email": "Fabio",
     "password": "123"
 }
 
 ### Test Endpoint with Authorization
 
 GET http://localhost:3000/test/posts
-Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJuYW1lIjoiRmFiaW8iLCJwYXNzd29yZCI6IjEyMyIsImlhdCI6MTcxMjc2NDg5NX0.tNYDlwxiFGJQWJOJm3XHfq3yJ6qfEYYYNI-2iVfUqHU
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJlbWFpbCI6IkZhYmlvIiwicGFzc3dvcmQiOiIxMjMiLCJpYXQiOjE3MTI3NzE1MzEsImV4cCI6MTcxMjc3MjQzMX0.7Fr0_2rx0ITw0QOcNkcRNSOewiNY0oErZ-T5HR3cwmI
