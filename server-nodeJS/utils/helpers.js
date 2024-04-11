@@ -1,4 +1,5 @@
 import jwt from 'jsonwebtoken';
+import { User } from '../models/user.js';
 
 export const authenticateToken = (req, res, next) => {
   const authHeader = req.headers['authorization'];
@@ -13,14 +14,12 @@ export const authenticateToken = (req, res, next) => {
 
   try {
     jwt.verify(token, process.env.ACCESS_TOKEN_SECRET, async (err, user) => {
-      if (err)
-        return res.status(401).send({ error: 'Invalid token' });
+      if (err) return res.status(401).send({ error: 'Invalid token' });
 
-      // Find user in Database
-      // const user = await User.findByPk(user.id);
-      // if (!user) {
-      //   return res.status(404).send({ message: 'User does not exist' });
-      // }
+      const user = await User.findById(user.id);
+      if (!user) {
+        return res.status(400).json({ msg: `User: ${user} does not exist` });
+      }
 
       // add user object to request
       req.user = user;
