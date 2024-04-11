@@ -1,0 +1,35 @@
+## Test Endpoint
+
+GET http://localhost:3000
+
+### Get User Information
+
+GET http://localhost:3000/auth/me
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJfaWQiOiI2NjE3ZTU4MGYwYzEyYTJkMDVkN2VlZTciLCJuYW1lIjoiRmFiaW8iLCJlbWFpbCI6ImRjZmFiaW9AZ21haWwuY29tIiwiaWF0IjoxNzEyODQzMjc1LCJleHAiOjE3MTI4NDQxNzV9.diJbO9v1PmDZb5O7-pW9AUxrRPrQHWnRJoZ8wPBDXzU
+
+### Login
+
+POST http://localhost:3000/auth/login
+Content-Type: application/json
+
+{
+    "email": "dcfabio@gmail.com",
+    "password": "123"
+}
+
+### Sign Up
+
+POST http://localhost:3000/auth/signup
+Content-Type: application/json
+
+{
+    "name": "Fabio",
+    "email": "dcfabio@gmail.com",
+    "password": "123"
+}
+
+
+### Test Endpoint with Authorization
+
+GET http://localhost:3000/test/posts
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJfaWQiOiI2NjE3ZTU4MGYwYzEyYTJkMDVkN2VlZTciLCJuYW1lIjoiRmFiaW8iLCJlbWFpbCI6ImRjZmFiaW9AZ21haWwuY29tIiwiaWF0IjoxNzEyODQzMjc1LCJleHAiOjE3MTI4NDQxNzV9.diJbO9v1PmDZb5O7-pW9AUxrRPrQHWnRJoZ8wPBDXzU
