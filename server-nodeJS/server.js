@@ -47,8 +47,5 @@ mongoose
     app.listen(PORT, () => {
       console.log(`Server is running on http://localhost:${PORT}`);
     });
-
-    // /* ADD DATA ONE TIME */
-    // User.insertMany(users);
   })
   .catch((error) => console.log(`${error} did not connect`));

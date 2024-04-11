@@ -1,5 +1,6 @@
-import bcrypt from 'bcrypt';
+import bcrypt, { genSalt, hash } from 'bcrypt';
 import { createToken, validateEmail } from '../utils/helpers.js';
+import { User } from '../models/user.js';
 
 export const login = async (req, res) => {
   try {
@@ -44,32 +45,34 @@ export const signUp = async (req, res) => {
   }
 
   try {
-    const existingUser = await User.findOne({ where: { email } });
+    const existingUser = await User.findOne({ email: email });
 
     if (existingUser) {
       return res.status(400).send('An account with this email already exists.');
     }
 
-    const user = await User.create({
-      email,
-      password: bcrypt.hashSync(password, SALT_ROUNDS),
-    });
+    const salt = await genSalt();
+    const passwordHash = await hash(password, salt);
 
-    const token = createToken(user);
+    const newUser = await new User({
+      name,
+      email,
+      password: passwordHash,
+    }).save();
+
+    const token = createToken({ name: newUser.name, email: newUser.email });
     return res
       .status(201)
-      .send({ token, user: { id: user.id, email: user.email } });
+      .send({ token, user: { id: newUser._id, email: newUser.email } });
   } catch (error) {
     return res.status(400).send(error);
   }
 };
 
 export const getUserInformation = async (req, res) => {
+  const user = await User.findOne({ email: email });
+
   // don't send back the password hash
-//   const user = await User.findOne({
-//     where: { id: req.user.id },
-//     include: [Bookings],
-//   });
   delete user.dataValues['password'];
   res.status(200).send({ user });
 };
