@@ -68,7 +68,7 @@ export const signUp = async (req, res) => {
     }).save();
 
     const token = createToken({
-      _id: user._id,
+      _id: newUser._id,
       name: newUser.name,
       email: newUser.email,
     });
