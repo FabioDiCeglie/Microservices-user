@@ -12,20 +12,25 @@ export const login = async (req, res) => {
         .send({ message: 'Please provide both email and password' });
     }
 
-    // Search user in database example
-    // const user = await User.findOne({
-    //   where: { email },
-    // });
+    const user = await User.findOne({ email: req.body.email });
 
-    if (!user || !bcrypt.compareSync(password, user.password)) {
+    if (!user)
       return res.status(400).send({
-        message: 'User with that email not found or password incorrect',
+        message: 'User with that email not found',
       });
-    }
 
-    const token = createToken(user);
+    const isPasswordCorrect = await bcrypt.compare(password, user.password);
+    if (!isPasswordCorrect)
+      return res.status(400).json({ msg: `Invalid password!` });
 
-    return res.status(200).send({ token, user: { id: 1, email: user.email } });
+    const token = createToken({ name: user.name, email: user.email });
+
+    return res
+      .status(200)
+      .send({
+        token,
+        user: { id: user._id, email: user.email, name: user.name },
+      });
   } catch (error) {
     console.log(error);
     return res.status(400).send({ message: 'Something went wrong, sorry' });
@@ -70,7 +75,7 @@ export const signUp = async (req, res) => {
 };
 
 export const getUserInformation = async (req, res) => {
-  const user = await User.findOne({ email: email });
+  const user = await User.findOne({ email: req.user.email });
 
   // don't send back the password hash
   delete user.dataValues['password'];
