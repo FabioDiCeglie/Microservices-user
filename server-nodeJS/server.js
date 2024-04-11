@@ -1,7 +1,7 @@
 import dotenv from 'dotenv';
 import express from 'express';
 import { posts } from './utils/fixtures.js';
-import { router as user } from './routes/auth.js';
+import { router as user } from './routes/user/auth.js';
 import { authenticateToken } from './utils/helpers.js';
 import cors from 'cors';
 
@@ -20,6 +20,7 @@ app.get('/', (req, res) => {
   ]);
 });
 
+// Test endpoint with authentication
 app.get('/test/posts', authenticateToken, (req, res) => {
   res.json(posts.filter((p) => p.username === req.user.email));
 });
