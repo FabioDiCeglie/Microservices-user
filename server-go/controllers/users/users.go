@@ -97,27 +97,30 @@ func Login(c *fiber.Ctx) error {
 	}
 
 	// Find the user by the provided email
-	var user database.User
-	if err := db.Preload("Flight").Preload("Event").Where("email = ?", input.Email).First(&user).Error; err != nil {
+	var user models.User
+	filter := bson.M{"email": input.Email}
+	if err := db.Collection("users").FindOne(context.Background(), filter).Decode(&user); err != nil {
 		return c.Status(401).JSON(fiber.Map{
-			"message": "Invalid credentials",
+			"message": "Invalid email or password",
 		})
 	}
 
 	// Check if the provided password matches the user's password
 	if !utils.CheckPasswordHash(input.Password, user.Password) {
 		return c.Status(401).JSON(fiber.Map{
-			"message": "Invalid credentials",
+			"message": "Invalid email or password",
 		})
 	}
 
-	// Generate a token
-	token, err := utils.GenerateToken(int(user.ID))
+	token, err := utils.GenerateToken(user.ID)
 	if err != nil {
 		return c.Status(500).JSON(fiber.Map{
 			"message": "Failed to generate token",
 		})
 	}
+
+	// Hide sensitive information before returning user data
+	user.Password = ""
 
 	return c.JSON(fiber.Map{
 		"token": token,
