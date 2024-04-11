@@ -16,13 +16,13 @@ export const authenticateToken = (req, res, next) => {
     jwt.verify(token, process.env.ACCESS_TOKEN_SECRET, async (err, user) => {
       if (err) return res.status(401).send({ error: 'Invalid token' });
 
-      const user = await User.findById(user.id);
-      if (!user) {
+      const userSaved = await User.findById(user._id);
+      if (!userSaved) {
         return res.status(400).json({ msg: `User: ${user} does not exist` });
       }
 
       // add user object to request
-      req.user = user;
+      req.user = userSaved;
       // next handler
       next();
     });

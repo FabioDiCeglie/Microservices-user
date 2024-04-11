@@ -34,7 +34,7 @@ app.get('/', (req, res) => {
 
 // Test endpoint with authentication
 app.get('/test/posts', authenticateToken, (req, res) => {
-  res.json(posts.filter((p) => p.username === req.user.email));
+  res.json(posts.filter((p) => p.username === req.user.name));
 });
 
 app.use('/auth', user);

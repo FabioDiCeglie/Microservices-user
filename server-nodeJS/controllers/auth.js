@@ -12,7 +12,7 @@ export const login = async (req, res) => {
         .send({ message: 'Please provide both email and password' });
     }
 
-    const user = await User.findOne({ email: req.body.email });
+    const user = await User.findOne({ email: email });
 
     if (!user)
       return res.status(400).send({
@@ -23,14 +23,16 @@ export const login = async (req, res) => {
     if (!isPasswordCorrect)
       return res.status(400).json({ msg: `Invalid password!` });
 
-    const token = createToken({ name: user.name, email: user.email });
+    const token = createToken({
+      _id: user._id,
+      name: user.name,
+      email: user.email,
+    });
 
-    return res
-      .status(200)
-      .send({
-        token,
-        user: { id: user._id, email: user.email, name: user.name },
-      });
+    return res.status(200).send({
+      token,
+      user: { id: user._id, email: user.email, name: user.name },
+    });
   } catch (error) {
     console.log(error);
     return res.status(400).send({ message: 'Something went wrong, sorry' });
@@ -65,7 +67,11 @@ export const signUp = async (req, res) => {
       password: passwordHash,
     }).save();
 
-    const token = createToken({ name: newUser.name, email: newUser.email });
+    const token = createToken({
+      _id: user._id,
+      name: newUser.name,
+      email: newUser.email,
+    });
     return res
       .status(201)
       .send({ token, user: { id: newUser._id, email: newUser.email } });
@@ -75,9 +81,10 @@ export const signUp = async (req, res) => {
 };
 
 export const getUserInformation = async (req, res) => {
-  const user = await User.findOne({ email: req.user.email });
+  const user = await User.findOne({ email: req.user.email }).lean();
 
   // don't send back the password hash
-  delete user.dataValues['password'];
+  delete user.password;
+
   res.status(200).send({ user });
 };
