@@ -24,11 +24,12 @@ app.use(helmet());
 // from exploiting vulnerabilities in the application by sending malicious requests from other domains.
 app.use(crossOriginResourcePolicy({ policy: 'cross-origin' }));
 
-app.get('/', (req, res) => {
+app.get('/healthcheck', (req, res) => {
   res.json([
     {
-      test: 'working',
-    },
+			status:  "success",
+			message: "Welcome to NodeJS microservice login",
+		}
   ]);
 });
 

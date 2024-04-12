@@ -27,7 +27,7 @@ func main() {
 		AllowMethods:     "GET,POST,HEAD,PUT,DELETE,PATCH,OPTIONS",
 	}))
 
-	app.Get("/healthchecker", func(c *fiber.Ctx) error {
+	app.Get("/healthcheck", func(c *fiber.Ctx) error {
 		return c.Status(fiber.StatusOK).JSON(fiber.Map{
 			"status":  "success",
 			"message": "Welcome to Go microservice login",
