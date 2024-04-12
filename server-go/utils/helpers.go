@@ -1,7 +1,10 @@
 package utils
 
 import (
+	"os"
 	"time"
+
+	"microservice-login/database"
 
 	"github.com/dgrijalva/jwt-go"
 	"github.com/gofiber/fiber/v2"
@@ -16,13 +19,15 @@ func CheckPasswordHash(password, hash string) bool {
 }
 
 func GenerateToken(userID primitive.ObjectID) (string, error) {
+	database.LoadEnv()
+
 	token := jwt.NewWithClaims(jwt.SigningMethodHS256, jwt.MapClaims{
 		"user_id": userID,
 		"exp":     time.Now().Add(time.Hour * 24).Unix(), // Token expiration time
 	})
 
 	// Sign the token with your secret key
-	tokenString, err := token.SignedString([]byte("secret-key"))
+	tokenString, err := token.SignedString([]byte(os.Getenv("ACCESS_TOKEN_SECRET")))
 	if err != nil {
 		return "", err
 	}
@@ -31,12 +36,13 @@ func GenerateToken(userID primitive.ObjectID) (string, error) {
 }
 
 func AuthMiddleware(c *fiber.Ctx) error {
+	database.LoadEnv()
 
 	tokenString := c.Get("Authorization")
 
 	// Parse and verify the JWT
 	token, err := jwt.Parse(tokenString, func(token *jwt.Token) (interface{}, error) {
-		return []byte("secret-key"), nil
+		return []byte(os.Getenv("ACCESS_TOKEN_SECRET")), nil
 	})
 
 	if err != nil || !token.Valid {
