@@ -170,14 +170,17 @@ func UpdateUser(c *fiber.Ctx) error {
 }
 
 func DeleteUser(c *fiber.Ctx) error {
-	id := c.Params("id")
-	db := database.Db
+	id := c.Params("_id")
 
+	db := database.Db
 	var user models.User
-	db.First(&user, id)
-	if user.Name == "" {
-		return c.Status(500).SendString("No User found with ID")
+
+	// Find the user by ID
+	filter := bson.M{"_id": id}
+	err := db.Collection("users").FindOneAndDelete(context.Background(), filter).Decode(&user)
+	if err != nil {
+		return c.Status(http.StatusNotFound).SendString("No user found with ID")
 	}
-	db.Delete(&user)
+
 	return c.SendString("User successfully deleted!")
 }
