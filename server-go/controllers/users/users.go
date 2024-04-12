@@ -5,10 +5,12 @@ import (
 	"microservice-login/database"
 	"microservice-login/models"
 	"microservice-login/utils"
+	"net/http"
 
 	"github.com/dgrijalva/jwt-go"
 	"github.com/gofiber/fiber/v2"
 	"go.mongodb.org/mongo-driver/bson"
+	"go.mongodb.org/mongo-driver/bson/primitive"
 	"golang.org/x/crypto/bcrypt"
 )
 
@@ -71,9 +73,20 @@ func SignUp(c *fiber.Ctx) error {
 	}
 
 	user.Password = string(hashedPassword)
-	db.Create(user)
 
-	token, err := utils.GenerateToken(int(user.ID))
+	// Insert user into MongoDB
+	createUser, err := db.Collection("users").InsertOne(context.Background(), user)
+	if err != nil {
+		return c.Status(http.StatusInternalServerError).SendString("Failed to insert user")
+	}
+
+	// Convert InsertedID to primitive.ObjectID
+	objectID, ok := createUser.InsertedID.(primitive.ObjectID)
+	if !ok {
+		return c.Status(http.StatusInternalServerError).SendString("Failed to convert InsertedID")
+	}
+
+	token, err := utils.GenerateToken(objectID)
 	if err != nil {
 		return c.Status(500).SendString("Failed to create token")
 	}
@@ -129,17 +142,30 @@ func Login(c *fiber.Ctx) error {
 }
 
 func UpdateUser(c *fiber.Ctx) error {
-	id := c.Params("id")
+	id := c.Params("_id")
+
 	db := database.Db
 	var user models.User
-	db.Find(&user, id)
-	if user.Name == "" {
-		return c.Status(500).SendString("No user found with ID")
+
+	// Find the user by ID
+	filter := bson.M{"_id": id}
+	err := db.Collection("users").FindOne(context.Background(), filter).Decode(&user)
+	if err != nil {
+		return c.Status(http.StatusNotFound).SendString("No user found with ID")
 	}
+
+	// Parse request body into user struct
 	if err := c.BodyParser(&user); err != nil {
-		return c.Status(503).SendString(err.Error())
+		return c.Status(http.StatusInternalServerError).SendString(err.Error())
 	}
-	db.Model(&user).Updates(&user)
+
+	// Update user in MongoDB
+	update := bson.M{"$set": user}
+	_, err = db.Collection("users").UpdateOne(context.Background(), filter, update)
+	if err != nil {
+		return c.Status(http.StatusInternalServerError).SendString("Failed to update user")
+	}
+
 	return c.JSON(user)
 }
 
