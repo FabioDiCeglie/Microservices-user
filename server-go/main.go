@@ -22,7 +22,7 @@ func main() {
 	// Use the cors middleware from gofiber/cors
 	app.Use(cors.New(cors.Config{
 		AllowHeaders:     "Origin,Content-Type,Accept,Content-Length,Accept-Language,Accept-Encoding,Connection,Access-Control-Allow-Origin,Authorization",
-		AllowOrigins:     "*",
+		AllowOrigins:     "http://localhost:4000",
 		AllowCredentials: true,
 		AllowMethods:     "GET,POST,HEAD,PUT,DELETE,PATCH,OPTIONS",
 	}))
@@ -36,11 +36,8 @@ func main() {
 
 	routes.SetUpRoutes(app)
 	fmt.Println("Starting server to http://localhost:4000")
-
-	// Start server
-	go func() {
-		if err := app.Listen(":4000"); err != nil {
-			log.Fatalf("Error starting server: %v", err)
-		}
-	}()
+	err := app.Listen(":4000")
+	if err != nil {
+		log.Fatalf("Error starting server: %v", err)
+	}
 }

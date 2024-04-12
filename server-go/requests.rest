@@ -1,15 +1,15 @@
 ## Test Endpoint
 
-GET http://localhost:3000
+GET http://localhost:4000/healthcheck
 
 ### Get User Information
 
-GET http://localhost:3000/auth/me
+GET http://localhost:4000/auth/me
 Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJfaWQiOiI2NjE3ZTU4MGYwYzEyYTJkMDVkN2VlZTciLCJuYW1lIjoiRmFiaW8iLCJlbWFpbCI6ImRjZmFiaW9AZ21haWwuY29tIiwiaWF0IjoxNzEyODQzMjc1LCJleHAiOjE3MTI4NDQxNzV9.diJbO9v1PmDZb5O7-pW9AUxrRPrQHWnRJoZ8wPBDXzU
 
 ### Login
 
-POST http://localhost:3000/auth/login
+POST http://localhost:4000/api/v1/auth/login
 Content-Type: application/json
 
 {
@@ -19,7 +19,7 @@ Content-Type: application/json
 
 ### Sign Up
 
-POST http://localhost:3000/auth/signup
+POST http://localhost:4000/api/v1/auth/signup
 Content-Type: application/json
 
 {
@@ -31,5 +31,5 @@ Content-Type: application/json
 
 ### Test Endpoint with Authorization
 
-GET http://localhost:3000/test/posts
+GET http://localhost:4000/api/v1/test/posts
 Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJfaWQiOiI2NjE3ZTU4MGYwYzEyYTJkMDVkN2VlZTciLCJuYW1lIjoiRmFiaW8iLCJlbWFpbCI6ImRjZmFiaW9AZ21haWwuY29tIiwiaWF0IjoxNzEyODQzMjc1LCJleHAiOjE3MTI4NDQxNzV9.diJbO9v1PmDZb5O7-pW9AUxrRPrQHWnRJoZ8wPBDXzU

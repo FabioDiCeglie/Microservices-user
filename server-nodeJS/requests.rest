@@ -1,6 +1,6 @@
 ## Test Endpoint
 
-GET http://localhost:3000
+GET http://localhost:3000/healthcheck
 
 ### Get User Information
 
