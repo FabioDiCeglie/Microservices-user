@@ -1,0 +1,22 @@
+{
+  "name": "server-typescript-graphql",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "type": "module",
+  "scripts": {
+    "build": "tsc",
+    "start": "node dist/index.js"
+  },
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "@apollo/federation": "^0.38.1",
+    "@apollo/gateway": "^2.7.2",
+    "apollo-server": "^3.13.0",
+    "graphql": "^16.8.1",
+    "graphql-tag": "^2.12.6",
+    "graphql-tools": "^9.0.1",
+    "typescript": "^5.4.5"
+  }
+}
