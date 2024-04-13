@@ -5,12 +5,15 @@ import { router as user } from './routes/user/auth.js';
 import { authenticateToken } from './utils/helpers.js';
 import helmet, { crossOriginResourcePolicy } from 'helmet';
 import cors from 'cors';
+import morgan from "morgan";
 import mongoose from 'mongoose';
 
 dotenv.config();
 
 const app = express();
 
+// This line of code is a logging middleware that logs HTTP requests and responses
+app.use(morgan("common"));
 app.use(express.json());
 
 app.use(cors());
