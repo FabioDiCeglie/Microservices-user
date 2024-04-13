@@ -5,7 +5,6 @@ import (
 	"fmt"
 	"log"
 	"os"
-	"time"
 
 	"github.com/joho/godotenv"
 	"go.mongodb.org/mongo-driver/mongo"
@@ -24,36 +23,42 @@ func LoadEnv() {
 	}
 }
 
-func ConnectMongo() error {
-	// Set client options
-	clientOptions := options.Client().ApplyURI(os.Getenv("MONGO_URL"))
+func ConnectMongo() *mongo.Collection {
+	LoadEnv()
 
-	// Connect to MongoDB
-	client, err := mongo.NewClient(clientOptions)
-	if err != nil {
-		return err
+	url := os.Getenv("MONGO_URL")
+	if url == "" {
+		log.Fatal("MONGO_URL environment variable is not set")
 	}
 
-	ctx, cancel := context.WithTimeout(context.Background(), 10*time.Second)
-	defer cancel()
-	err = client.Connect(ctx)
+	// Connect to the database.
+	clientOptions := options.Client().ApplyURI(url)
+	client, err := mongo.Connect(context.Background(), clientOptions)
 	if err != nil {
-		return err
+		log.Fatal(err)
 	}
 
-	fmt.Println("Connected to MongoDB!")
+	// Check the connection.
+	err = client.Ping(context.Background(), nil)
+	if err != nil {
+		log.Fatal(err)
+	}
 
-	MongoClient = client
-	return nil
+	// Create collection
+	collection := client.Database("staging").Collection("user")
+	if err != nil {
+		log.Fatal(err)
+	}
+
+	fmt.Println("Connected to db")
+
+	return collection
 }
 
 func InitMongoDatabase() error {
-	err := ConnectMongo()
-	if err != nil {
-		return err
-	}
+	LoadEnv()
 
-	Db = MongoClient.Database(os.Getenv("MONGO_DATABASE_NAME"))
+	ConnectMongo()
 
 	fmt.Println("MongoDB database initialized!")
 	return nil
