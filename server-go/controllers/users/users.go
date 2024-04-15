@@ -2,6 +2,7 @@ package users
 
 import (
 	"context"
+	"fmt"
 	"microservice-login/database"
 	"microservice-login/models"
 	"microservice-login/utils"
@@ -158,30 +159,51 @@ func Login(c *fiber.Ctx) error {
 }
 
 func UpdateUser(c *fiber.Ctx) error {
+	// Retrieve user ID from the request context set by the AuthMiddleware
+	userID := c.Locals("user_id").(primitive.ObjectID)
+
 	id := c.Params("_id")
+	targetUserID, err := primitive.ObjectIDFromHex(id)
+	if err != nil {
+		return c.Status(401).SendString("Invalid user ID format")
+	}
+
+	// Check if the user performing the delete operation is the same as the user whose account is being deleted
+	if userID != targetUserID {
+		return c.Status(403).SendString("Forbidden: You are not authorized to update this user")
+	}
 
 	db := database.Db
 	var user models.User
 
 	// Find the user by ID
-	filter := bson.M{"_id": id}
-	err := db.Collection("users").FindOne(context.Background(), filter).Decode(&user)
-	if err != nil {
-		return c.Status(http.StatusNotFound).SendString("No user found with ID")
+	filter := bson.M{"_id": userID}
+	if err := db.Collection("users").FindOne(context.Background(), filter).Decode(&user); err != nil {
+		return c.Status(http.StatusNotFound).SendString(fmt.Sprintf("No user found with ID %s", userID.Hex()))
 	}
 
-	// Parse request body into user struct
 	if err := c.BodyParser(&user); err != nil {
-		return c.Status(http.StatusInternalServerError).SendString(err.Error())
+		return c.Status(400).SendString("invalid body")
 	}
 
-	// Update user in MongoDB
-	update := bson.M{"$set": user}
+	// Hash the user's password before storing it
+	hashedPassword, err := bcrypt.GenerateFromPassword([]byte(user.Password), bcrypt.DefaultCost)
+	if err != nil {
+		return c.Status(500).SendString("Failed to hash password")
+	}
+
+	update := bson.M{"$set": bson.M{
+		"name":     user.Name,
+		"email":    user.Email,
+		"password": string(hashedPassword),
+	}}
+
 	_, err = db.Collection("users").UpdateOne(context.Background(), filter, update)
 	if err != nil {
 		return c.Status(http.StatusInternalServerError).SendString("Failed to update user")
 	}
 
+	user.Password = ""
 	return c.JSON(user)
 }
 
@@ -203,7 +225,7 @@ func DeleteUser(c *fiber.Ctx) error {
 	db := database.Db
 	var user models.User
 
-	filter := bson.M{"_id": userID}
+	filter := bson.M{"_id": targetUserID}
 	if err := db.Collection("users").FindOneAndDelete(context.Background(), filter).Decode(&user); err != nil {
 		return c.Status(http.StatusNotFound).SendString("No user found with ID")
 	}

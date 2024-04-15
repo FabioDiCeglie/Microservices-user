@@ -29,7 +29,19 @@ Content-Type: application/json
 }
 
 
-### Test Endpoints with Authorization
+### Test Endpoints with Authorization DELETE
 
-DELETE http://localhost:4000/api/v1/auth/661d5597bf28d10d1dab1209
-Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE3MTMyODUwOTgsInVzZXJfaWQiOiI2NjFkNTU5N2JmMjhkMTBkMWRhYjEyMDkifQ.n11ILRIDUdHE8kNvIwstqELThEsDbEjhAnuye_bYves
+DELETE http://localhost:4000/api/v1/auth/661d57d5e352179d2009c4c4
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE3MTMyODU0NjEsInVzZXJfaWQiOiI2NjFkNTdkNWUzNTIxNzlkMjAwOWM0YzQifQ.GvH1tXxaUBrPWyrCUpaRg0KZVhaGfJZjM6_jVUMXl24
+
+### Test Endpoints with Authorization PUT
+
+PUT http://localhost:4000/api/v1/auth/661d57d5e352179d2009c4c4
+Content-Type: application/json
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE3MTMyODU0NjEsInVzZXJfaWQiOiI2NjFkNTdkNWUzNTIxNzlkMjAwOWM0YzQifQ.GvH1tXxaUBrPWyrCUpaRg0KZVhaGfJZjM6_jVUMXl24
+
+{
+    "name": "Fabio Test 2",
+    "email": "dcfabioTest@gmail.com",
+    "password": "123"
+}
