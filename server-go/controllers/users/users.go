@@ -188,6 +188,7 @@ func UpdateUser(c *fiber.Ctx) error {
 func DeleteUser(c *fiber.Ctx) error {
 	// Retrieve user ID from the request context set by the AuthMiddleware
 	userID := c.Locals("user_id").(primitive.ObjectID)
+
 	id := c.Params("_id")
 	targetUserID, err := primitive.ObjectIDFromHex(id)
 	if err != nil {
