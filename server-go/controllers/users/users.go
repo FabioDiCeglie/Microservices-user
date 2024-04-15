@@ -6,6 +6,7 @@ import (
 	"microservice-login/models"
 	"microservice-login/utils"
 	"net/http"
+	"os"
 
 	"github.com/dgrijalva/jwt-go"
 	"github.com/gofiber/fiber/v2"
@@ -15,12 +16,16 @@ import (
 )
 
 func GetUserInformation(c *fiber.Ctx) error {
+	database.LoadEnv()
+
 	db := database.Db
 	tokenString := c.Get("Authorization")
+	// Remove "Bearer " prefix from the token string
+	tokenString = tokenString[len("Bearer "):]
 
 	// Parse and verify the JWT
 	token, err := jwt.Parse(tokenString, func(token *jwt.Token) (interface{}, error) {
-		return []byte("secret"), nil
+		return []byte(os.Getenv("ACCESS_TOKEN_SECRET")), nil
 	})
 
 	if err != nil || !token.Valid {
@@ -32,8 +37,15 @@ func GetUserInformation(c *fiber.Ctx) error {
 	if !ok {
 		return c.Status(401).SendString("Unauthorized")
 	}
-
-	userID := claims["user_id"].(string) // Assuming user_id is stored as a string in the token
+	// Extract user ID from claims and convert it to ObjectId
+	userIDHex, ok := claims["user_id"].(string)
+	if !ok {
+		return c.Status(401).SendString("Invalid user ID format")
+	}
+	userID, err := primitive.ObjectIDFromHex(userIDHex)
+	if err != nil {
+		return c.Status(401).SendString("Invalid user ID format")
+	}
 
 	// Fetch user data from MongoDB using the user ID
 	var user models.User
@@ -43,6 +55,9 @@ func GetUserInformation(c *fiber.Ctx) error {
 			"message": "Invalid user ID",
 		})
 	}
+
+	// Hide sensitive information before returning user data
+	user.Password = ""
 
 	// Return the user data as a JSON response
 	return c.JSON(user)

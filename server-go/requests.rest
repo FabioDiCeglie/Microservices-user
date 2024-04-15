@@ -4,8 +4,8 @@ GET http://localhost:4000/healthcheck
 
 ### Get User Information
 
-GET http://localhost:4000/auth/me
-Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJfaWQiOiI2NjE3ZTU4MGYwYzEyYTJkMDVkN2VlZTciLCJuYW1lIjoiRmFiaW8iLCJlbWFpbCI6ImRjZmFiaW9AZ21haWwuY29tIiwiaWF0IjoxNzEyODQzMjc1LCJleHAiOjE3MTI4NDQxNzV9.diJbO9v1PmDZb5O7-pW9AUxrRPrQHWnRJoZ8wPBDXzU
+GET http://localhost:4000/api/v1/auth/me
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE3MTMyODM5NzAsInVzZXJfaWQiOiI2NjE3ZWQ2ZTc5YmI1ZWRjZjVkYTYwODMifQ.LFr2G7aBfXyGdRRLLO4DIo9gxBoDSGvU2-lyldc0-Lo
 
 ### Login
 
