@@ -50,9 +50,10 @@ func GetUserInformation(c *fiber.Ctx) error {
 
 func SignUp(c *fiber.Ctx) error {
 	db := database.Db
-	payload := new(struct {
-		ConfirmedPassword string `json:"confirmedPassword"`
-	})
+	type SignUpPayload struct {
+		NewPassword string `json:"password"`
+	}
+	payload := new(SignUpPayload)
 	user := new(models.User)
 	if err := c.BodyParser(user); err != nil {
 		return c.Status(503).Send([]byte(err.Error()))
@@ -62,7 +63,7 @@ func SignUp(c *fiber.Ctx) error {
 		return c.Status(503).Send([]byte(err.Error()))
 	}
 
-	if user.Password != payload.ConfirmedPassword {
+	if user.Password != payload.NewPassword {
 		return c.Status(400).SendString("Password doesn't match")
 	}
 

@@ -23,7 +23,7 @@ func LoadEnv() {
 	}
 }
 
-func ConnectMongo() *mongo.Collection {
+func ConnectMongo() *mongo.Database {
 	LoadEnv()
 
 	url := os.Getenv("MONGO_URL")
@@ -45,14 +45,15 @@ func ConnectMongo() *mongo.Collection {
 	}
 
 	// Create collection
-	collection := client.Database("staging").Collection("user")
+	db := client.Database("staging")
 	if err != nil {
 		log.Fatal(err)
 	}
 
 	fmt.Println("Connected to db")
 
-	return collection
+	Db = db
+	return Db
 }
 
 func InitMongoDatabase() error {
