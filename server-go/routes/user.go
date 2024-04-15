@@ -13,6 +13,6 @@ func SetUpRoutes(app *fiber.App) {
 	app.Get(apiUrlUser+"/me", users.GetUserInformation)
 	app.Post(apiUrlUser+"/signup", users.SignUp)
 	app.Post(apiUrlUser+"/login", users.Login)
-	app.Delete(apiUrlUser+"/:id", utils.AuthMiddleware, users.DeleteUser)
-	app.Patch(apiUrlUser+"/:id", utils.AuthMiddleware, users.UpdateUser)
+	app.Delete(apiUrlUser+"/:_id", utils.AuthMiddleware, users.DeleteUser)
+	app.Patch(apiUrlUser+"/:_id", utils.AuthMiddleware, users.UpdateUser)
 }

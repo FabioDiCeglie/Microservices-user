@@ -40,6 +40,9 @@ func AuthMiddleware(c *fiber.Ctx) error {
 
 	tokenString := c.Get("Authorization")
 
+	// Remove "Bearer " prefix from the token string
+	tokenString = tokenString[len("Bearer "):]
+
 	// Parse and verify the JWT
 	token, err := jwt.Parse(tokenString, func(token *jwt.Token) (interface{}, error) {
 		return []byte(os.Getenv("ACCESS_TOKEN_SECRET")), nil
@@ -55,7 +58,16 @@ func AuthMiddleware(c *fiber.Ctx) error {
 		return c.Status(401).SendString("Unauthorized")
 	}
 
-	userID := int(claims["user_id"].(float64)) // Assuming user_id is stored as a number in the token
+	// Extract user ID from claims and convert it to ObjectId
+	userIDHex, ok := claims["user_id"].(string)
+	if !ok {
+		return c.Status(401).SendString("Invalid user ID format")
+	}
+
+	userID, err := primitive.ObjectIDFromHex(userIDHex)
+	if err != nil {
+		return c.Status(401).SendString("Invalid user ID format")
+	}
 
 	// Set the user ID in the request context for further use in route handlers
 	c.Locals("user_id", userID)

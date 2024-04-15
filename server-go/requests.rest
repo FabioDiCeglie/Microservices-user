@@ -13,7 +13,7 @@ POST http://localhost:4000/api/v1/auth/login
 Content-Type: application/json
 
 {
-    "email": "dcfabio@gmail.com",
+    "email": "dcfabioTest@gmail.com",
     "password": "123"
 }
 
@@ -23,10 +23,13 @@ POST http://localhost:4000/api/v1/auth/signup
 Content-Type: application/json
 
 {
-    "name": "Fabio",
-    "email": "dcfabio@gmail.com",
+    "name": "Fabio Test",
+    "email": "dcfabioTest@gmail.com",
     "password": "123"
 }
 
 
 ### Test Endpoints with Authorization
+
+DELETE http://localhost:4000/api/v1/auth/661d5597bf28d10d1dab1209
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE3MTMyODUwOTgsInVzZXJfaWQiOiI2NjFkNTU5N2JmMjhkMTBkMWRhYjEyMDkifQ.n11ILRIDUdHE8kNvIwstqELThEsDbEjhAnuye_bYves

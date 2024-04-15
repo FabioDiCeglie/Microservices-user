@@ -186,15 +186,24 @@ func UpdateUser(c *fiber.Ctx) error {
 }
 
 func DeleteUser(c *fiber.Ctx) error {
+	// Retrieve user ID from the request context set by the AuthMiddleware
+	userID := c.Locals("user_id").(primitive.ObjectID)
 	id := c.Params("_id")
+	targetUserID, err := primitive.ObjectIDFromHex(id)
+	if err != nil {
+		return c.Status(401).SendString("Invalid user ID format")
+	}
+
+	// Check if the user performing the delete operation is the same as the user whose account is being deleted
+	if userID != targetUserID {
+		return c.Status(403).SendString("Forbidden: You are not authorized to delete this user")
+	}
 
 	db := database.Db
 	var user models.User
 
-	// Find the user by ID
-	filter := bson.M{"_id": id}
-	err := db.Collection("users").FindOneAndDelete(context.Background(), filter).Decode(&user)
-	if err != nil {
+	filter := bson.M{"_id": userID}
+	if err := db.Collection("users").FindOneAndDelete(context.Background(), filter).Decode(&user); err != nil {
 		return c.Status(http.StatusNotFound).SendString("No user found with ID")
 	}
 
