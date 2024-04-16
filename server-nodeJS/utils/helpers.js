@@ -45,10 +45,6 @@ export const createToken = (data) => {
   return jwt.sign(data, process.env.ACCESS_TOKEN_SECRET, { expiresIn: '15m' });
 };
 
-export const verifyToken = (token) => {
-  return jwt.verify(token, jwtSecret);
-};
-
 export const validateEmail = (email) => {
   // Regular expression for basic email validation
   const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
