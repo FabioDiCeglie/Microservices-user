@@ -44,7 +44,7 @@ const startApolloServer = async () => {
     })
   );
 
-  const port = 6000;
+  const port = 6002;
   await new Promise<void>((resolve, reject) => {
     httpServer.on("error", reject);
     mongoose
