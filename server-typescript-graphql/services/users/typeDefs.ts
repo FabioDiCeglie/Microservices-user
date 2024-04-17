@@ -7,6 +7,7 @@ export const typeDefs: DocumentNode = gql`
     name: String!
     email: String!
     password: String!
+    token: String
   }
 
   type Query {

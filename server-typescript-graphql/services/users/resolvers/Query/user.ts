@@ -23,7 +23,7 @@ export const login: GraphQLFieldResolver<any, unknown> = async (
 
     const token = jwt.sign({ id: user._id }, process.env.ACCESS_TOKEN_SECRET as string);
 
-    return { id: user._id , name: user.name, email: user.email, password: '', token};
+    return { id: user._id , name: user.name, email: user.email, password: '', token };
   } catch (err) {
     return new GraphQLError(err as unknown as string);
   }
