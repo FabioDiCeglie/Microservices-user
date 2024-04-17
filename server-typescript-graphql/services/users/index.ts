@@ -55,7 +55,7 @@ const startApolloServer = async () => {
         (req as unknown as any).user = verified;
 
         // add token to context
-        return { token };
+        return { token, user: (req as unknown as any).user };
       },
     })
   );

@@ -2,7 +2,7 @@ import bcrypt from 'bcrypt';
 import { GraphQLError, GraphQLFieldResolver } from 'graphql';
 import jwt from 'jsonwebtoken';
 import { User } from '@/models/user';
-import { verifyTokenContext } from '@/utils/helpers';
+import { createToken, verifyTokenContext } from '@/utils/helpers';
 import { MyContext } from '@/utils/types';
 
 export const login: GraphQLFieldResolver<any, unknown> = async (
@@ -21,7 +21,10 @@ export const login: GraphQLFieldResolver<any, unknown> = async (
     const isMatch = await bcrypt.compare(password, user.password);
     if (!isMatch) return new GraphQLError(`Invalid password!`);
 
-    const token = jwt.sign({ id: user._id }, process.env.ACCESS_TOKEN_SECRET as string);
+    const token = createToken({
+      id: user._id.toJSON(),
+      email: user.email,
+    });
 
     return { id: user._id , name: user.name, email: user.email, password: '', token };
   } catch (err) {
