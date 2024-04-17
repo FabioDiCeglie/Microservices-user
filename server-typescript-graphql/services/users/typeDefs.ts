@@ -14,4 +14,8 @@ export const typeDefs: DocumentNode = gql`
     user(id: String): User
     login(email: String, password: String): User
   }
+
+  type Mutation {
+    signUp(name: String, email: String, password: String): User
+  }
 `;
