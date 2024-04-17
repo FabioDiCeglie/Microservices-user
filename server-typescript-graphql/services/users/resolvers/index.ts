@@ -1,6 +1,6 @@
 import { GraphQLResolverMap } from "@apollo/subgraph/dist/schema-helper/resolverMap";
 import { getUserInformation, login } from "./Query/user";
-import { signUp, deleteUser } from "./Mutation/user";
+import { signUp, deleteUser, updateUser } from "./Mutation/user";
 
 export const resolvers: GraphQLResolverMap<unknown> = {
   Query: {
@@ -9,6 +9,7 @@ export const resolvers: GraphQLResolverMap<unknown> = {
   },
   Mutation:{
     signUp: signUp,
-    deleteUser: deleteUser
+    deleteUser: deleteUser,
+    updateUser: updateUser
   }
 };

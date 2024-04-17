@@ -18,5 +18,6 @@ export const typeDefs: DocumentNode = gql`
   type Mutation {
     signUp(name: String, email: String, password: String): User
     deleteUser(id: String, email: String): String
+    updateUser(id: String, name: String, email: String, password: String): User
   }
 `;

@@ -64,9 +64,9 @@ export const deleteUser: GraphQLFieldResolver<any, unknown> = async (
     id: string;
     email: string;
   },
-  contextValue: unknown
+  context: unknown
 ) => {
-  verifyTokenContext(contextValue as MyContext);
+  verifyTokenContext(context as MyContext);
 
   const { id, email } = args;
   if (!email || !id) {
@@ -77,13 +77,63 @@ export const deleteUser: GraphQLFieldResolver<any, unknown> = async (
     return new GraphQLError('Please provide a valid a correct email address.');
   }
 
-  if(id !== (contextValue as MyContext).user.id){
+  if(id !== (context as MyContext).user.id){
     return new GraphQLError('You are not authorized!');
   }
 
   try {
     await User.findOne({ email: email }).deleteOne();
     return "Deleted user succesfull"
+  } catch (error) {
+    return new GraphQLError(error as unknown as string);
+  }
+};
+
+export const updateUser: GraphQLFieldResolver<any, unknown> = async (
+  _: any,
+  args: { id: string; email?: string; password?: string; name?: string },
+  context: unknown
+) => {
+  // Verify authentication token
+  verifyTokenContext(context as MyContext);
+
+  const { id, email, password, name } = args;
+  if (!id) {
+    throw new GraphQLError('Invalid id!');
+  }
+
+  try {
+    // Check if the user is authorized to update their own account
+    if (id !== (context as MyContext).user.id) {
+      throw new GraphQLError('You are not authorized!');
+    }
+
+    const user = await User.findById(id);
+
+    if (!user) {
+      throw new GraphQLError('User not found!');
+    }
+
+    if (email) {
+      if (!validateEmail(email)) {
+        throw new GraphQLError('Please provide a valid email address.');
+      }
+      user.email = email;
+    }
+
+    if (password) {
+      const salt = await genSalt();
+      const passwordHash = await hash(password, salt);
+      user.password = passwordHash;
+    }
+
+    if (name) {
+      user.name = name;
+    }
+
+    await user.save();
+
+    return { id: user._id , name: user.name, email: user.email, password: '', token: (context as MyContext).token };
   } catch (error) {
     return new GraphQLError(error as unknown as string);
   }

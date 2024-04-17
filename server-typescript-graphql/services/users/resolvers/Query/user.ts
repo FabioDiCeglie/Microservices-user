@@ -1,9 +1,8 @@
-import bcrypt from 'bcrypt';
-import { GraphQLError, GraphQLFieldResolver } from 'graphql';
-import jwt from 'jsonwebtoken';
 import { User } from '@/models/user';
 import { createToken, verifyTokenContext } from '@/utils/helpers';
 import { MyContext } from '@/utils/types';
+import bcrypt from 'bcrypt';
+import { GraphQLError, GraphQLFieldResolver } from 'graphql';
 
 export const login: GraphQLFieldResolver<any, unknown> = async (
   _: unknown,
