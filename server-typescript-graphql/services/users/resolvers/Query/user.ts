@@ -13,24 +13,17 @@ export const login: GraphQLFieldResolver<any, unknown> = async (
   }
 ) => {
   try {
-    const { email: userEmail, password: newPassword } = args;
+    const { email, password } = args;
 
-    const user = await User.findOne({ email: userEmail });
-    if (!user) return new GraphQLError(`User: ${userEmail} does not exist`);
+    const user = await User.findOne({ email });
+    if (!user) return new GraphQLError(`User: ${email} does not exist`);
 
-    const isMatch = await bcrypt.compare(newPassword, user.password);
+    const isMatch = await bcrypt.compare(password, user.password);
     if (!isMatch) return new GraphQLError(`Invalid password!`);
 
-    const token = jwt.sign({ id: user._id }, process.env.JWT_SECRET as string);
+    const token = jwt.sign({ id: user._id }, process.env.ACCESS_TOKEN_SECRET as string);
 
-    const { id, name, email } = user;
-
-    return {
-      id,
-      name,
-      email,
-      token,
-    };
+    return { id: user._id , name: user.name, email: user.email, password: '', token};
   } catch (err) {
     return new GraphQLError(err as unknown as string);
   }
