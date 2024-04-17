@@ -44,7 +44,7 @@ export const getUserInformation = async (
       return new GraphQLError(`User: ${user} does not exist`);
     }
 
-    return user;
+    return { id: user._id , name: user.name, email: user.email, password: '', token: (contextValue as {token: string}).token };
   } catch (err) {
     return new GraphQLError(err as unknown as string);
   }
