@@ -3,7 +3,7 @@ import bodyParser, { urlencoded } from "body-parser";
 import cors from "cors";
 import { json } from "express";
 import helmet, { crossOriginResourcePolicy } from "helmet";
-import jwt from "jsonwebtoken";
+import jwt, { GetPublicKeyOrSecret, Secret } from "jsonwebtoken";
 import mongoose from "mongoose";
 import morgan from "morgan";
 import { app, httpServer, server } from "./server";
@@ -50,8 +50,8 @@ const startApolloServer = async () => {
         if (token.startsWith("Bearer ")) {
           token = token.slice(7, token.length).trimStart();
         }
-
-        const verified = jwt.verify(token, process.env.JWT_SECRET as string);
+   
+        const verified = jwt.verify(token, process.env.ACCESS_TOKEN_SECRET as Secret | GetPublicKeyOrSecret);
         (req as unknown as any).user = verified;
 
         // add token to context
