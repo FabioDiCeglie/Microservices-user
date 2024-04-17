@@ -6,7 +6,8 @@ import bodyParser, { urlencoded } from "body-parser";
 import helmet, { crossOriginResourcePolicy } from "helmet";
 import mongoose from "mongoose";
 import { app, httpServer, server } from "./server";
-require("dotenv").config();
+import { config } from 'dotenv';
+config();
 
 // This line of code is a logging middleware that logs HTTP requests and responses
 app.use(morgan("common"));
@@ -43,7 +44,7 @@ const startApolloServer = async () => {
     })
   );
 
-  const port = 5000;
+  const port = 6000;
   await new Promise<void>((resolve, reject) => {
     httpServer.on("error", reject);
     mongoose
