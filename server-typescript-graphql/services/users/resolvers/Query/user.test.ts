@@ -8,7 +8,7 @@ import { typeDefs } from '@/services/users/typeDefs';
 import jwt from 'jsonwebtoken';
 import mongoose from 'mongoose';
 
-describe('login', () => {
+describe('user', () => {
   let server: ApolloServer;
   const mockObjectId = new mongoose.Types.ObjectId();
 

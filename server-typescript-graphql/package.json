@@ -7,7 +7,7 @@
     "start-gateway": "nodemon gateway/index.ts",
     "start-service-users": "nodemon services/users/index.ts",
     "test": "jest --watch",
-    "test-all": "jest --clearCache && jest && test-coverage",
+    "test-all": "jest --clearCache && jest && yarn test-coverage",
     "test-coverage": "jest --coverage"
   },
   "author": "",
