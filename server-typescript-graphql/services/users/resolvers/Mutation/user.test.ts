@@ -89,7 +89,7 @@ describe('user', () => {
       });
     });
 
-    it('signUp - return an error when args -> email-password-name are empty', async () => {
+    test('signUp - return an error when args -> email-password-name are empty', async () => {
       const signUp = gql`
         mutation {
           signUp(
@@ -120,7 +120,7 @@ describe('user', () => {
       ]);
     });
 
-    it('signUp - return an error when email is not valid', async () => {
+    test('signUp - return an error when email is not valid', async () => {
       const signUp = gql`
         mutation {
           signUp(
