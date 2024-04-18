@@ -1,6 +1,6 @@
 export type MyContext = {
-  token: string;
-  user: IUser;
+  token: string | undefined;
+  user: IUser | undefined;
 };
 
 export type IUser = {

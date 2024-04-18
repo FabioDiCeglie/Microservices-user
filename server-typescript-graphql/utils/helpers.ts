@@ -12,7 +12,7 @@ export const verifyTokenContext = (contextValue: MyContext) => {
     });
 };
 
-export const createToken = (data: any) => {
+export const createToken = (data: {id: string, email: string }) => {
   return jwt.sign(data, process.env.ACCESS_TOKEN_SECRET  as Secret, { expiresIn: '15m' });
 };
 

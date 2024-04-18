@@ -77,7 +77,7 @@ export const deleteUser: GraphQLFieldResolver<any, unknown> = async (
     return new GraphQLError('Please provide a valid a correct email address.');
   }
 
-  if(id !== (context as MyContext).user.id){
+  if(id !== (context as MyContext).user?.id){
     return new GraphQLError('You are not authorized!');
   }
 
@@ -104,7 +104,7 @@ export const updateUser: GraphQLFieldResolver<any, unknown> = async (
 
   try {
     // Check if the user is authorized to update their own account
-    if (id !== (context as MyContext).user.id) {
+    if (id !== (context as MyContext).user?.id) {
       throw new GraphQLError('You are not authorized!');
     }
 
