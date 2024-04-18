@@ -39,7 +39,7 @@ describe('user', () => {
   });
 
   describe('login', () => {
-    test('should return the current user when user is logged in', async () => {
+    test('login - return the current user when user is logged in', async () => {
       jest.spyOn(User, 'findOne').mockReturnValueOnce({
         _id: mockObjectId,
         name: 'test-name',
@@ -75,7 +75,7 @@ describe('user', () => {
       });
     });
 
-    test('should return user does not exist', async () => {
+    test('login - return user does not exist', async () => {
       jest
         .spyOn(User, 'findOne')
         .mockImplementation(() => Promise.resolve(false) as unknown as any);
@@ -105,7 +105,7 @@ describe('user', () => {
       ]);
     });
 
-    test('should return an error for an invalid password', async () => {
+    test('login - return an error for an invalid password', async () => {
       jest.spyOn(User, 'findOne').mockReturnValueOnce({
         id: 'test-id',
         firstName: 'test-name',
@@ -141,7 +141,7 @@ describe('user', () => {
       ]);
     });
 
-    test('should return an error from the try->catch', async () => {
+    test('login - return an error from the try->catch', async () => {
       // Mocking User.findOne to simulate an error
       jest
         .spyOn(User, 'findOne')
@@ -175,7 +175,7 @@ describe('user', () => {
   });
 
   describe('getuserInformation', () => {
-    test('should return User: ${id} does not exist ', async () => {
+    test('getUserInformation - return User: ${id} does not exist ', async () => {
       jest.spyOn(User, 'findById').mockResolvedValueOnce(false);
 
       const getUserInformation = gql`
@@ -203,7 +203,7 @@ describe('user', () => {
       ]);
     });
 
-    test('should return error from try->catch ', async () => {
+    test('getUserInformation - return error from try->catch ', async () => {
       jest
         .spyOn(User, 'findById')
         .mockRejectedValueOnce(new Error('Database error'));
@@ -233,7 +233,7 @@ describe('user', () => {
       ]);
     });
 
-    test('should return user information when user is found', async () => {
+    test('getUserInformation - return user information when user is found', async () => {
       jest.spyOn(User, 'findById').mockResolvedValueOnce({
         _id: 'test-id',
         name: 'test-name',
@@ -268,7 +268,7 @@ describe('user', () => {
       });
     });
 
-    test('should return user is not authenticated when context value is empty', async () => {
+    test('getUserInformation - return user is not authenticated when context value is empty', async () => {
       jest.spyOn(User, 'findById').mockResolvedValueOnce({
         _id: 'test-id',
         name: 'test-name',
