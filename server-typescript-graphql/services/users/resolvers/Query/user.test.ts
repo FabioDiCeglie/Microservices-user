@@ -12,7 +12,7 @@ describe('user', () => {
   let server: ApolloServer;
   const mockObjectId = new mongoose.Types.ObjectId();
 
-  beforeAll(() => {
+  beforeAll(async () => {
     server = new ApolloServer({
       typeDefs,
       resolvers,
@@ -22,6 +22,7 @@ describe('user', () => {
         delete: async () => {},
       },
     });
+    await server.start();
   });
 
   beforeEach(() => {
@@ -32,9 +33,9 @@ describe('user', () => {
     jest.clearAllMocks();
   });
 
-  afterAll(() => {
-    server.stop();
+  afterAll(async () => {
     jest.clearAllMocks();
+    await server.stop();
   });
 
   describe('login', () => {

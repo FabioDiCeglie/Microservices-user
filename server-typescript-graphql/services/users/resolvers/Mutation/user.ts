@@ -34,7 +34,6 @@ export const signUp: GraphQLFieldResolver<any, unknown> = async (
 
     const salt = await genSalt();
     const passwordHash = await hash(password, salt);
-
     const newUser = await new User({
       name,
       email,
