@@ -41,9 +41,8 @@ export const getUserInformation = async (
     const { id } = args;
 
     const user = await User.findById(id);
-
     if (!user) {
-      return new GraphQLError(`User: ${user} does not exist`);
+      return new GraphQLError(`User: ${id} does not exist`);
     }
 
     return { id: user._id , name: user.name, email: user.email, password: '', token: (contextValue as {token: string}).token };
