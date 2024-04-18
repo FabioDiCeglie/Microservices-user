@@ -5,6 +5,8 @@ import gql from "graphql-tag";
 import { User } from "@/models/user";
 import { resolvers } from "..";
 import { typeDefs } from "@/services/users/typeDefs";
+import jwt from 'jsonwebtoken';
+import mongoose from "mongoose";
 
 describe("login", () => {
   let server: ApolloServer;
@@ -31,21 +33,28 @@ describe("login", () => {
   });
 
   test("should return the current user when user is logged in", async () => {
+
+    const mockObjectId = new mongoose.Types.ObjectId();
+
     jest.spyOn(User, "findOne").mockReturnValueOnce({
-      id: "test-id",
-      firstName: "test-name",
+      _id: mockObjectId,
+      name: "test-name",
       password: "test-password",
     } as unknown as any);
 
     jest
       .spyOn(bcrypt, "compare")
       .mockImplementation(() => Promise.resolve(true));
+    
+    jest
+      .spyOn(jwt, "sign")
+      .mockReturnValueOnce("" as unknown as any);
 
     const login = gql`
       query {
         login(email: "fabio@gmail.com", password: "test-password") {
-          id
-          firstName
+          name
+          password
         }
       }
     `;
@@ -58,8 +67,8 @@ describe("login", () => {
     assert(res.body.kind === "single");
     expect(res.body.singleResult.data).toEqual({
       login: {
-        id: "test-id",
-        firstName: "test-name",
+        name: "test-name",
+        password: ''
       },
     });
   });
@@ -73,7 +82,7 @@ describe("login", () => {
       query {
         login(email: "fabio@gmail.com", password: "test-password") {
           id
-          firstName
+          name
         }
       }
     `;
@@ -109,7 +118,7 @@ describe("login", () => {
       query {
         login(email: "fabio@gmail.com", password: "test") {
           id
-          firstName
+          name
         }
       }
     `;
