@@ -33,6 +33,15 @@ app.use(bodyParser.json({ limit: "30mb", strict: true }));
 // It also limits the request body size to 30MB and allows nested objects in the URL-encoded data.
 app.use(urlencoded({ limit: "30mb", extended: true }));
 
+app.get('/healthcheck', (req, res) => {
+  res.json([
+    {
+			status:  "success",
+			message: "Welcome to NodeJS microservice login",
+		}
+  ]);
+});
+
 const startApolloServer = async () => {
   await server.start();
   app.use(
