@@ -227,7 +227,7 @@ describe('user', () => {
   });
 
   describe('deleteUser', () => {
-    test('delete user when are inputs are valid', async () => {
+    test('deleteUser - when are inputs are valid', async () => {
       User.findOne = jest.fn().mockImplementationOnce(() => ({
         deleteOne: jest.fn().mockResolvedValueOnce(() => {}),
       }));
@@ -249,7 +249,7 @@ describe('user', () => {
       });
     });
 
-    test('delete user - return you are not authorized if the args id is not the same as the context', async () => {
+    test('deleteUser - return you are not authorized if the args id is not the same as the context', async () => {
       const deleteUser = gql`
         mutation {
           deleteUser(id: "test-id", email: "test-emailmail.com")
@@ -272,7 +272,7 @@ describe('user', () => {
       ]);
     });
 
-    test('delete user - return an error from the try->catch', async () => {
+    test('deleteUser - return an error from the try->catch', async () => {
       jest.spyOn(User, 'findOne').mockImplementationOnce(() => {
         throw new Error('Database error');
       });
@@ -300,7 +300,7 @@ describe('user', () => {
       ]);
     });
 
-    test('delete user -  return invalid email or id error', async () => {
+    test('deleteUser -  return invalid email or id error', async () => {
       const deleteUser = gql`
         mutation {
           deleteUser(id: "", email: "test-email@gmail.com")
@@ -323,7 +323,7 @@ describe('user', () => {
       ]);
     });
 
-    test('delete user - return please provide a valid a correct email address if the email is not valid', async () => {
+    test('deleteUser - return please provide a valid a correct email address if the email is not valid', async () => {
       const deleteUser = gql`
         mutation {
           deleteUser(id: "test-id", email: "test-emailmail.com")
@@ -346,27 +346,413 @@ describe('user', () => {
       ]);
     });
 
-    test('delete user - return You are not authorized if arg id !== context.user.id', async () => {
-        const deleteUser = gql`
-          mutation {
-            deleteUser(id: "test-id", email: "test-email@gmail.com")
+    test('deleteUser - return You are not authorized if arg id !== context.user.id', async () => {
+      const deleteUser = gql`
+        mutation {
+          deleteUser(id: "test-id", email: "test-email@gmail.com")
+        }
+      `;
+
+      const res = await server.executeOperation(
+        { query: deleteUser },
+        { contextValue: { user: { id: 'test-' }, token: 'mocked-token' } }
+      );
+
+      assert(res.body.kind === 'single');
+      expect(res.body.singleResult.errors).toEqual([
+        {
+          extensions: { code: 'INTERNAL_SERVER_ERROR' },
+          locations: [{ column: 3, line: 2 }],
+          message: 'You are not authorized!',
+          path: ['deleteUser'],
+        },
+      ]);
+    });
+  });
+
+  describe('updateUser', () => {
+    test('updateUser - when are inputs are valid', async () => {
+      User.findById = jest.fn().mockImplementationOnce(() => ({
+        _id: 'test-id',
+        name: 'test-name',
+        email: 'test-email@gmail.com',
+        password: '',
+        token: 'mocked-token',
+        save: jest.fn().mockResolvedValueOnce(() => {}),
+      }));
+
+      jest.spyOn(bcrypt, 'genSalt').mockImplementation(() => 'fakeSalt');
+      jest.spyOn(bcrypt, 'hash').mockImplementation(() => 'fakeHash');
+
+      const updateUser = gql`
+        mutation {
+          updateUser(
+            id: "test-id"
+            email: "test-email-2@gmail.com"
+            password: "1234"
+            name: "test-name-2"
+          ) {
+            id
+            name
+            email
+            password
+            token
           }
-        `;
-  
-        const res = await server.executeOperation(
-          { query: deleteUser },
-          { contextValue: { user: { id: 'test-' }, token: 'mocked-token' } }
-        );
-  
-        assert(res.body.kind === 'single');
-        expect(res.body.singleResult.errors).toEqual([
-          {
-            extensions: { code: 'INTERNAL_SERVER_ERROR' },
-            locations: [{ column: 3, line: 2 }],
-            message: 'You are not authorized!',
-            path: ['deleteUser'],
-          },
-        ]);
+        }
+      `;
+
+      const res = await server.executeOperation(
+        { query: updateUser },
+        { contextValue: { user: { id: 'test-id' }, token: 'mocked-token' } }
+      );
+
+      assert(res.body.kind === 'single');
+      expect(res.body.singleResult.data).toEqual({
+        updateUser: {
+          id: 'test-id',
+          name: 'test-name-2',
+          email: 'test-email-2@gmail.com',
+          password: '',
+          token: 'mocked-token',
+        },
       });
+    });
+
+    test('updateUser - return invalid id error', async () => {
+      User.findById = jest.fn().mockImplementationOnce(() => ({
+        _id: 'test-id',
+        name: 'test-name',
+        email: 'test-email@gmail.com',
+        password: '',
+        token: 'mocked-token',
+        save: jest.fn().mockResolvedValueOnce(() => {}),
+      }));
+
+      const updateUser = gql`
+        mutation {
+          updateUser(
+            id: ""
+            email: "test-email@gmail.com"
+            password: "123"
+            name: "test-name"
+          ) {
+            id
+            name
+            email
+            password
+            token
+          }
+        }
+      `;
+
+      const res = await server.executeOperation(
+        { query: updateUser },
+        { contextValue: { user: { id: 'test-id' }, token: 'mocked-token' } }
+      );
+
+      assert(res.body.kind === 'single');
+      expect(res.body.singleResult.errors).toEqual([
+        {
+          message: 'Invalid id!',
+          locations: [{ line: 2, column: 3 }],
+          path: ['updateUser'],
+          extensions: { code: 'INTERNAL_SERVER_ERROR' },
+        },
+      ]);
+    });
+
+    test('updateUser - return you are not authorized error', async () => {
+      User.findById = jest.fn().mockImplementationOnce(() => ({
+        _id: 'test-id',
+        name: 'test-name',
+        email: 'test-email@gmail.com',
+        password: '',
+        token: 'mocked-token',
+        save: jest.fn().mockResolvedValueOnce(() => {}),
+      }));
+
+      const updateUser = gql`
+        mutation {
+          updateUser(
+            id: "test-id"
+            email: "test-email@gmail.com"
+            password: "123"
+            name: "test-name"
+          ) {
+            id
+            name
+            email
+            password
+            token
+          }
+        }
+      `;
+
+      const res = await server.executeOperation(
+        { query: updateUser },
+        { contextValue: { user: { id: 'test' }, token: 'mocked-token' } }
+      );
+
+      assert(res.body.kind === 'single');
+      expect(res.body.singleResult.errors).toEqual([
+        {
+          message: 'You are not authorized!',
+          locations: [{ line: 2, column: 3 }],
+          path: ['updateUser'],
+          extensions: { code: 'INTERNAL_SERVER_ERROR' },
+        },
+      ]);
+    });
+
+    test('updateUser - return user not found error', async () => {
+      User.findById = jest.fn().mockImplementationOnce(() => false);
+      const updateUser = gql`
+        mutation {
+          updateUser(
+            id: "test-id"
+            email: "test-email@gmail.com"
+            password: "123"
+            name: "test-name"
+          ) {
+            id
+            name
+            email
+            password
+            token
+          }
+        }
+      `;
+
+      const res = await server.executeOperation(
+        { query: updateUser },
+        { contextValue: { user: { id: 'test-id' }, token: 'mocked-token' } }
+      );
+
+      assert(res.body.kind === 'single');
+      expect(res.body.singleResult.errors).toEqual([
+        {
+          message: 'User not found!',
+          locations: [{ line: 2, column: 3 }],
+          path: ['updateUser'],
+          extensions: { code: 'INTERNAL_SERVER_ERROR' },
+        },
+      ]);
+    });
+
+    test('updateUser - return please provide a correct email address error', async () => {
+      User.findById = jest.fn().mockImplementationOnce(() => ({
+        _id: 'test-id',
+        name: 'test-name',
+        email: 'test-email@gmail.com',
+        password: '',
+        token: 'mocked-token',
+        save: jest.fn().mockResolvedValueOnce(() => {}),
+      }));
+      const updateUser = gql`
+        mutation {
+          updateUser(
+            id: "test-id"
+            email: "test-emailail.com"
+            password: "123"
+            name: "test-name"
+          ) {
+            id
+            name
+            email
+            password
+            token
+          }
+        }
+      `;
+
+      const res = await server.executeOperation(
+        { query: updateUser },
+        { contextValue: { user: { id: 'test-id' }, token: 'mocked-token' } }
+      );
+
+      assert(res.body.kind === 'single');
+      expect(res.body.singleResult.errors).toEqual([
+        {
+          message: 'Please provide a valid email address.',
+          locations: [{ line: 2, column: 3 }],
+          path: ['updateUser'],
+          extensions: { code: 'INTERNAL_SERVER_ERROR' },
+        },
+      ]);
+    });
+
+    test('updateUser - return error from try->catch', async () => {
+      User.findById = jest.fn().mockImplementationOnce(() => {
+        throw new Error('Database error');
+      });
+
+      const updateUser = gql`
+        mutation {
+          updateUser(
+            id: "test-id"
+            email: "test-email@gmail.com"
+            password: "123"
+            name: "test-name"
+          ) {
+            id
+            name
+            email
+            password
+            token
+          }
+        }
+      `;
+
+      const res = await server.executeOperation(
+        { query: updateUser },
+        { contextValue: { user: { id: 'test-id' }, token: 'mocked-token' } }
+      );
+
+      assert(res.body.kind === 'single');
+      expect(res.body.singleResult.errors).toEqual([
+        {
+          message: 'Error: Database error',
+          locations: [{ line: 2, column: 3 }],
+          path: ['updateUser'],
+          extensions: { code: 'INTERNAL_SERVER_ERROR' },
+        },
+      ]);
+    });
+
+    test('updateUser - when email = null', async () => {
+      User.findById = jest.fn().mockImplementationOnce(() => ({
+        _id: 'test-id',
+        name: 'test-name',
+        email: 'test-email@gmail.com',
+        password: '',
+        token: 'mocked-token',
+        save: jest.fn().mockResolvedValueOnce(() => {}),
+      }));
+
+      jest.spyOn(bcrypt, 'genSalt').mockImplementation(() => 'fakeSalt');
+      jest.spyOn(bcrypt, 'hash').mockImplementation(() => 'fakeHash');
+
+      const updateUser = gql`
+        mutation {
+          updateUser(
+            id: "test-id"
+            password: "1234"
+            name: "test-name-2"
+          ) {
+            id
+            name
+            email
+            password
+            token
+          }
+        }
+      `;
+
+      const res = await server.executeOperation(
+        { query: updateUser },
+        { contextValue: { user: { id: 'test-id' }, token: 'mocked-token' } }
+      );
+
+      assert(res.body.kind === 'single');
+      expect(res.body.singleResult.data).toEqual({
+        updateUser: {
+          id: 'test-id',
+          name: 'test-name-2',
+          email: 'test-email@gmail.com',
+          password: '',
+          token: 'mocked-token',
+        },
+      });
+    });
+
+    test('updateUser - when password = null', async () => {
+      User.findById = jest.fn().mockImplementationOnce(() => ({
+        _id: 'test-id',
+        name: 'test-name',
+        email: 'test-email@gmail.com',
+        password: '',
+        token: 'mocked-token',
+        save: jest.fn().mockResolvedValueOnce(() => {}),
+      }));
+
+      jest.spyOn(bcrypt, 'genSalt').mockImplementation(() => 'fakeSalt');
+      jest.spyOn(bcrypt, 'hash').mockImplementation(() => 'fakeHash');
+
+      const updateUser = gql`
+        mutation {
+          updateUser(
+            id: "test-id"
+            name: "test-name-2"
+          ) {
+            id
+            name
+            email
+            password
+            token
+          }
+        }
+      `;
+
+      const res = await server.executeOperation(
+        { query: updateUser },
+        { contextValue: { user: { id: 'test-id' }, token: 'mocked-token' } }
+      );
+
+      assert(res.body.kind === 'single');
+      expect(res.body.singleResult.data).toEqual({
+        updateUser: {
+          id: 'test-id',
+          name: 'test-name-2',
+          email: 'test-email@gmail.com',
+          password: '',
+          token: 'mocked-token',
+        },
+      });
+    });
+
+    test('updateUser - when name = null', async () => {
+      User.findById = jest.fn().mockImplementationOnce(() => ({
+        _id: 'test-id',
+        name: 'test-name',
+        email: 'test-email@gmail.com',
+        password: '',
+        token: 'mocked-token',
+        save: jest.fn().mockResolvedValueOnce(() => {}),
+      }));
+
+      jest.spyOn(bcrypt, 'genSalt').mockImplementation(() => 'fakeSalt');
+      jest.spyOn(bcrypt, 'hash').mockImplementation(() => 'fakeHash');
+
+      const updateUser = gql`
+        mutation {
+          updateUser(
+            id: "test-id"
+            password: "1234"
+          ) {
+            id
+            name
+            email
+            password
+            token
+          }
+        }
+      `;
+
+      const res = await server.executeOperation(
+        { query: updateUser },
+        { contextValue: { user: { id: 'test-id' }, token: 'mocked-token' } }
+      );
+
+      assert(res.body.kind === 'single');
+      expect(res.body.singleResult.data).toEqual({
+        updateUser: {
+          id: 'test-id',
+          name: 'test-name',
+          email: 'test-email@gmail.com',
+          password: '',
+          token: 'mocked-token',
+        },
+      });
+    });
   });
 });
