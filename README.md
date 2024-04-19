@@ -18,7 +18,7 @@ This project demonstrates user authentication and authorization systems implemen
 ## Technologies Used
 
 - **Go**: Used for the Go server implementation.
-- **Node.js**: Utilized for building the Node.js server.
+- **Node.js**: Utilized for building the Node.js server ( Dockerfile included 😜 ).
 - **TypeScript**: Employed for developing the TypeScript server with GraphQL.
 - **GraphQL**: Implemented for the TypeScript server, providing a query language for APIs.
 - **Jest**: Used for testing the TypeScript server to ensure the robustness of the implemented features.
