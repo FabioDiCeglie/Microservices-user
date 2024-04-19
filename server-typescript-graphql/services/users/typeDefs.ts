@@ -11,13 +11,13 @@ export const typeDefs: DocumentNode = gql`
   }
 
   type Query {
-    user(id: String): User
-    login(email: String, password: String): User
+    user(id: String!): User
+    login(email: String!, password: String!): User
   }
 
   type Mutation {
-    signUp(name: String, email: String, password: String): User
-    deleteUser(id: String, email: String): String
-    updateUser(id: String, name: String, email: String, password: String): User
+    signUp(name: String!, email: String!, password: String!): User
+    deleteUser(id: String!, email: String!): String
+    updateUser(id: String!, name: String, email: String, password: String): User
   }
 `;
