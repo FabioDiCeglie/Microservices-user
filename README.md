@@ -61,3 +61,5 @@ project-root/
 ```
 
 ## Tests coverage TypeScript Server
+
+![Tests coverage Typescrip server](https://github.com/FabioDiCeglie/Microservices-user/assets/93951206/21e16b80-613a-4eaf-a0ce-963449b2c94a)
