@@ -21,8 +21,8 @@ export const authenticateToken = (req, res, next) => {
         return res.status(400).json({ msg: `User: ${user} does not exist` });
       }
 
-      // add user object to request
-      req.user = userSaved;
+      // add user and token object to request
+      req.user = {id: userSaved._id.toJSON() , email: userSaved.email , token}
       // next handler
       next();
     });

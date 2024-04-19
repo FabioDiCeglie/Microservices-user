@@ -5,7 +5,7 @@ GET http://localhost:3000/healthcheck
 ### Get User Information
 
 GET http://localhost:3000/auth/me
-Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJfaWQiOiI2NjE3ZTU4MGYwYzEyYTJkMDVkN2VlZTciLCJuYW1lIjoiRmFiaW8iLCJlbWFpbCI6ImRjZmFiaW9AZ21haWwuY29tIiwiaWF0IjoxNzEyODQzMjc1LCJleHAiOjE3MTI4NDQxNzV9.diJbO9v1PmDZb5O7-pW9AUxrRPrQHWnRJoZ8wPBDXzU
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJfaWQiOiI2NjIyMTFjMjVmMmE2YWJmZmQ0YzYwZWQiLCJuYW1lIjoiRmFiaW8tdGVzdC0yIiwiZW1haWwiOiJkY2ZhYmlvLXRlc3QtMkBnbWFpbC5jb20iLCJpYXQiOjE3MTM1MDg4MDIsImV4cCI6MTcxMzUwOTcwMn0.Q3NsS4sGeLjiPbKCX-HtS5dnnY71Lc0Sp2wtfVqv9Zs
 
 ### Login
 
@@ -13,7 +13,7 @@ POST http://localhost:3000/auth/login
 Content-Type: application/json
 
 {
-    "email": "dcfabio@gmail.com",
+    "email": "dcfabio-test@gmail.com",
     "password": "123"
 }
 
@@ -23,7 +23,23 @@ POST http://localhost:3000/auth/signup
 Content-Type: application/json
 
 {
-    "name": "Fabio",
-    "email": "dcfabio@gmail.com",
+    "name": "Fabio-test",
+    "email": "dcfabio-test@gmail.com",
+    "password": "123"
+}
+
+### Test Endpoints with Authorization DELETE
+
+DELETE http://localhost:3000/auth/662211c25f2a6abffd4c60ed
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJfaWQiOiI2NjIyMGUyZjczZmU4MTM5YWY2ZmI0YzYiLCJuYW1lIjoiRmFiaW8tVGVzdC0yIiwiZW1haWwiOiJkY2ZhYmlvVGVzdC0zQGdtYWlsLmNvbSIsImlhdCI6MTcxMzUwODEzNSwiZXhwIjoxNzEzNTA5MDM1fQ.rLzBhsRQZ-B_noS9WPL9jQrYokuh4L3seh_8gqCXpbk
+
+### Test Endpoints with Authorization PUT
+
+PUT http://localhost:3000/auth/662211c25f2a6abffd4c60ed
+Content-Type: application/json
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJfaWQiOiI2NjIyMTFjMjVmMmE2YWJmZmQ0YzYwZWQiLCJuYW1lIjoiRmFiaW8tdGVzdC0yIiwiZW1haWwiOiJkY2ZhYmlvLXRlc3QtMkBnbWFpbC5jb20iLCJpYXQiOjE3MTM1MDg4MDIsImV4cCI6MTcxMzUwOTcwMn0.Q3NsS4sGeLjiPbKCX-HtS5dnnY71Lc0Sp2wtfVqv9Zs
+
+{
+    "email": "dcfabio-test-2@gmail.com",
     "password": "123"
 }
