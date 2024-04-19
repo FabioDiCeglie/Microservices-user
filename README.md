@@ -1,6 +1,6 @@
 # Overview
 
-This project demonstrates user authentication and authorization systems implemented across three different servers using various technologies, all powered by ⚪️MongoDB for optimised data management. 
+This project demonstrates user authentication and authorization systems implemented across three different servers using various technologies, all powered by **⚪️MongoDB** for optimised data management. 
 The project includes:
 
 1. **Go Server with CRUD Operations**: This server is built with Go and provides endpoints for user authentication and authorization along with CRUD operations. The server ensures secure access to resources.
