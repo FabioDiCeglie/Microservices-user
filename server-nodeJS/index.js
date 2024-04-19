@@ -1,12 +1,10 @@
+import cors from 'cors';
 import dotenv from 'dotenv';
 import express from 'express';
-import { posts } from './utils/fixtures.js';
-import { router as user } from './routes/user/auth.js';
-import { authenticateToken } from './utils/helpers.js';
 import helmet, { crossOriginResourcePolicy } from 'helmet';
-import cors from 'cors';
-import morgan from "morgan";
 import mongoose from 'mongoose';
+import morgan from "morgan";
+import { router as user } from './routes/user/auth.js';
 
 dotenv.config();
 
@@ -34,11 +32,6 @@ app.get('/healthcheck', (req, res) => {
 			message: "Welcome to NodeJS microservice login",
 		}
   ]);
-});
-
-// Test endpoint with authentication
-app.get('/test/posts', authenticateToken, (req, res) => {
-  res.json(posts.filter((p) => p.username === req.user.name));
 });
 
 app.use('/auth', user);
