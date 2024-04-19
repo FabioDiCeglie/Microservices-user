@@ -10,10 +10,10 @@ This project demonstrates user authentication and authorization systems implemen
 
 ## Features
 
-- User Authentication and Authorization: All servers implement robust user authentication and authorization mechanisms to ensure secure access to resources.
-- CRUD Operations: CRUD (Create, Read, Update, Delete) operations are supported across all servers, allowing users to manage data efficiently.
-- GraphQL Implementation: The TypeScript server utilizes GraphQL for querying and mutating data, offering a more flexible and efficient way to interact with the server.
-- Jest Testing: The TypeScript server includes Jest testing to ensure the reliability and correctness of the implemented functionalities.
+- **User Authentication and Authorization**: All servers implement robust user authentication and authorization mechanisms to ensure secure access to resources.
+- **CRUD Operations**: CRUD (Create, Read, Update, Delete) operations are supported across all servers, allowing users to manage data efficiently.
+- **GraphQL Implementation**: The TypeScript server utilizes GraphQL for querying and mutating data, offering a more flexible and efficient way to interact with the server.
+- **Jest Testing**: The TypeScript server includes Jest testing to ensure the reliability and correctness of the implemented functionalities.
 
 ## Technologies Used
 
